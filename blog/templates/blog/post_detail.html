@@ -1,0 +1,84 @@
+{% extends "blog/base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'blogs' %}">← Back</a>
+
+<h1>{{ post.title }}</h1>
+
+<div class="post-meta">
+    <small>
+        By {{ post.author }} •
+        {{ post.created_at|date:"M d, Y" }} •
+        {{ post.reading_time }} min read •
+        👁 {{ post.views }} views
+    </small>
+</div>
+
+<p>{{ post.content }}</p>
+
+<hr>
+
+<!-- LIKE SECTION -->
+<div class="like-box">
+    <strong>❤️ {{ post.likes.count }} likes</strong>
+
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'toggle_like' post.slug %}">
+            {% csrf_token %}
+            <button class="read-btn" type="submit">
+                {% if user_has_liked %}Unlike{% else %}Like{% endif %}
+            </button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">Login</a> to like this post.</p>
+    {% endif %}
+</div>
+
+<hr>
+
+<!-- COMMENTS -->
+<h3>Comments ({{ comments.count }})</h3>
+
+{% for comment in comments %}
+    <div class="comment">
+        <strong>{{ comment.name }}</strong>
+        <small> • {{ comment.created_at|date:"M d, Y H:i" }}</small>
+
+        <p>{{ comment.body }}</p>
+
+        {% if user.is_authenticated and comment.name == user.username %}
+            <form method="post" action="{% url 'delete_comment' comment.id %}">
+                {% csrf_token %}
+                <button type="submit" class="delete-btn">Delete</button>
+            </form>
+        {% endif %}
+    </div>
+{% empty %}
+    <p>No comments yet.</p>
+{% endfor %}
+
+<!-- ADD COMMENT -->
+{% if user.is_authenticated %}
+    <div class="comment-form">
+        <h3>Add a Comment</h3>
+
+        <form method="post">
+            {% csrf_token %}
+            <textarea
+                name="body"
+                rows="4"
+                placeholder="Write your comment..."
+                style="width:100%; padding:8px;"
+                required
+            ></textarea>
+            <br><br>
+            <button class="read-btn" type="submit">Post Comment</button>
+        </form>
+    </div>
+{% else %}
+    <p><a href="{% url 'login' %}">Login</a> to add a comment.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Blog{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="nav-left">
+            <button class="hamburger" onclick="toggleMenu()">☰</button>
+
+            <div class="nav-links" id="navLinks">
+                <a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
+                    Home
+                </a>
+
+                <a href="{% url 'blogs' %}" class="{% if 'blogs' in request.path %}active{% endif %}">
+                    Blogs
+                </a>
+
+                <a href="{% url 'about' %}" class="{% if 'about' in request.path %}active{% endif %}">
+                    About
+                </a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <button class="dark-toggle" onclick="toggleDarkMode()">🌙</button>
+
+            {% if user.is_authenticated %}
+            <div class="user-menu">
+                <span class="user-name" onclick="toggleUserMenu()">
+                    Hi, {{ user.username }} ▾
+                </span>
+
+                <div class="user-dropdown" id="userDropdown">
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+
+            {% endif %}
+        </div>
+
+    </nav>
+
+
+
+
+    {% if messages %}
+    <div style="margin:15px 0;">
+        {% for message in messages %}
+        <div style="
+                padding:10px;
+                border-radius:5px;
+                margin-bottom:10px;
+                background:#ecfeff;
+                color:#0369a1;
+            ">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer>
+        © 2026 | Built with Django ❤️
+    </footer>
+    <script>
+        function toggleMenu() {
+            document.getElementById("navLinks").classList.toggle("show");
+        }
+
+        function toggleUserMenu() {
+            document.getElementById("userDropdown").classList.toggle("show");
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark");
+            localStorage.setItem("darkMode",
+                document.body.classList.contains("dark")
+            );
+        }
+
+        if (localStorage.getItem("darkMode") === "true") {
+            document.body.classList.add("dark");
+        }
+    </script>
+
+
+
+</body>
+
+</html>

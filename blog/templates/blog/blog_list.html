@@ -1,0 +1,65 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Blogs{% endblock %}
+
+{% block content %}
+
+<h1>All Blogs</h1>
+
+<!-- Search bar (ONLY ONCE) -->
+<form method="get" style="margin:20px 0;">
+    <input
+        type="text"
+        name="q"
+        placeholder="Search blogs..."
+        value="{{ query|default:'' }}"
+        style="padding:8px; width:60%;"
+    >
+    <button class="read-btn" type="submit">Search</button>
+</form>
+
+<!-- Blog list -->
+{% for post in posts %}
+    <div class="post">
+        <h3>{{ post.title }}</h3>
+
+        <small style="color:#6b7280;">
+            By {{ post.author }} •
+            {{ post.created_at|date:"M d, Y" }} •
+            {{ post.reading_time }} min read
+        </small>
+
+        <p>{{ post.content|truncatewords:35 }}</p>
+
+        <a class="read-btn" href="{% url 'post_detail' post.slug %}">
+            Read →
+        </a>
+    </div>
+{% empty %}
+    <p>No blogs found.</p>
+{% endfor %}
+
+<hr>
+
+<!-- Pagination -->
+<div style="margin-top:20px;">
+    {% if posts.has_previous %}
+        <a class="read-btn"
+           href="?q={{ query }}&page={{ posts.previous_page_number }}">
+            ← Previous
+        </a>
+    {% endif %}
+
+    <span style="margin: 0 10px;">
+        Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+    </span>
+
+    {% if posts.has_next %}
+        <a class="read-btn"
+           href="?q={{ query }}&page={{ posts.next_page_number }}">
+            Next →
+        </a>
+    {% endif %}
+</div>
+
+{% endblock %}

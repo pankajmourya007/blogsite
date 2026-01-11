@@ -1,0 +1,35 @@
+{% extends "blog/base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.username.label_tag }}
+    {{ form.username }}
+    <br><br>
+
+    {{ form.password.label_tag }}
+    <input type="password" name="password" id="password-field">
+    <br>
+
+    <input type="checkbox" onclick="togglePassword()"> Show Password
+    <br><br>
+
+    <button class="read-btn" type="submit">Login</button>
+</form>
+<p>
+    <a href="{% url 'password_reset' %}">
+        Forgot password?
+    </a>
+</p>
+
+<script>
+function togglePassword() {
+    const pwd = document.getElementById("password-field");
+    pwd.type = pwd.type === "password" ? "text" : "password";
+}
+</script>
+{% endblock %}
