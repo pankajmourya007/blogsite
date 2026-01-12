@@ -144,3 +144,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+# --------------------------------------------------
+# CSRF COOKIE SETTINGS
+# --------------------------------------------------
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://blogsite-pankaj.onrender.com",
+]
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
